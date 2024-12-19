@@ -1,0 +1,337 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Learning Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+    <div class="mode-toggle">
+    <button id="toggleMode">Switch to Dark Mode</button>
+</div>
+<div id="numpad">
+    <button class="num-button">1</button>
+    <button class="num-button">2</button>
+    <button class="num-button">3</button>
+    <button class="num-button">4</button>
+    <button class="num-button">5</button>
+    <button class="num-button">6</button>
+    <button class="num-button">7</button>
+    <button class="num-button">8</button>
+    <button class="num-button">9</button>
+    <button class="num-button">0</button>
+    <button class="num-button">-</button>
+    <button id="eraser">Eraser</button>
+    <button id="clear">Clear</button>
+</div>
+<marquee behavior="scroll" direction="left">
+made by Uzaan
+</marquee>
+        <h1>Math Learning Game</h1>
+        <div id="timeTaken">Time: 0s</div>
+        <div id="score">Score: 0</div>
+        <div id="question">Question: </div>
+        <input type="text" id="answer" placeholder="Enter your answer">
+        <button id="checkAnswer">Check Answer</button>
+        <button id="nextQuestion">Next Question</button>
+        <button id="restartGame">Restart Game</button>
+        <div id="result"></div>
+    </div>
+    <script src="script.js"></script>
+    <h1>made by Uzaan shakeel<h1>
+</body>
+</html><style>body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333333;
+}
+
+#score, #question, #result {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+}
+
+.num-button, #clear {
+    font-size: 18px;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.num-button:hover, #clear:hover {
+    background-color: #0056b3;
+}
+#timeTaken {
+    font-size: 16px;
+    margin: 10px 0;
+    color: #555;
+    font-weight: bold;
+}
+input {
+    font-size: 16px;
+    padding: 10px;
+    width: calc(100% - 24px);
+    margin-bottom: 15px;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+}
+#numpad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Adjusted for more buttons */
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.num-button, #clear {
+    font-size: 18px;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.num-button:hover, #clear:hover {
+    background-color: #0056b3;
+}
+
+#clear {
+    grid-column: span 2; /* Make the clear button span two columns */
+    background-color: #FF4136;
+}
+
+#clear:hover {
+    background-color: #C0392B;
+}
+#eraser {
+    font-size: 18px;
+    padding: 10px;
+    background-color: #FFA500; /* Orange color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+#eraser:hover {
+    background-color: #CC8400;
+}
+/* Light Mode (default) */
+body {
+    background-color: white;
+    color: black;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Mode */
+body.dark-mode {
+    background-color: #121212;
+    color: white;
+}
+
+.container.dark-mode {
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+/* Toggle Button Styling */
+.mode-toggle {
+    text-align: center;
+    margin: 10px 0;
+}
+
+#toggleMode {
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007BFF;
+    color: white;
+}
+
+#toggleMode:hover {
+    background-color: #0056b3;
+}
+button {
+    font-size: 16px;
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #007BFF;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#result {
+    font-weight: bold;
+}</style><script>let score = 0;
+let currentAnswer = 0;
+let startTime;
+const scoreLimit = 20; // Set the score limit
+
+function generateQuestion() {
+    if (score >= scoreLimit) {
+        endGame();
+        return;
+    }
+
+    const operations = ["+", "-", "*", "/"];
+    const num1 = Math.floor(Math.random() * 20) + 1;
+    const num2 = Math.floor(Math.random() * 20) + 1;
+    const operation = operations[Math.floor(Math.random() * operations.length)];
+
+    // Ensure division results in an integer
+    let question;
+    if (operation === "/") {
+        question = `${num1 * num2} / ${num1}`;
+        currentAnswer = num2;
+    } else {
+        question = `${num1} ${operation} ${num2}`;
+        currentAnswer = eval(question);
+    }
+
+    document.getElementById("question").innerText = `Question: ${question}`;
+    document.getElementById("answer").value = "";
+    document.getElementById("result").innerText = "";
+    document.getElementById("timeTaken").innerText = "Time: 0s";
+
+    // Start the timer
+    startTime = new Date();
+}
+// Numpad functionality
+document.querySelectorAll(".num-button").forEach(button => {
+    button.addEventListener("click", (event) => {
+        event.preventDefault(); // Prevent duplicate input
+        const char = button.textContent;
+        const answerField = document.getElementById("answer");
+        answerField.value += char; // Append the clicked number or "-" to the input field
+    });
+});
+
+document.getElementById("clear").addEventListener("click", () => {
+    document.getElementById("answer").value = ""; // Clear the input field
+});
+
+document.getElementById("eraser").addEventListener("click", () => {
+    const answerField = document.getElementById("answer");
+    answerField.value = answerField.value.slice(0, -1); // Remove the last character
+});
+
+document.getElementById("clear").addEventListener("click", () => {
+    document.getElementById("answer").value = ""; // Clear the input field
+});
+
+document.getElementById("eraser").addEventListener("click", () => {
+    const answerField = document.getElementById("answer");
+    answerField.value = answerField.value.slice(0, -1); // Remove the last character
+});
+function checkAnswer() {
+    if (score >= scoreLimit) return; // Prevent further play after reaching score limit
+
+    const userAnswer = parseFloat(document.getElementById("answer").value);
+    const resultElement = document.getElementById("result");
+
+    // Stop the timer and calculate time taken
+    const endTime = new Date();
+    const timeTaken = Math.round((endTime - startTime) / 1000); // in seconds
+    document.getElementById("timeTaken").innerText = `Time: ${timeTaken}s`;
+
+    if (isNaN(userAnswer)) {
+        resultElement.innerText = "Please enter a valid number!";
+        resultElement.style.color = "orange";
+    } else if (userAnswer === currentAnswer) {
+        resultElement.innerText = `Correct! You answered in ${timeTaken} seconds.`;
+        resultElement.style.color = "green";
+        score++;
+    } else {
+        resultElement.innerText = `Wrong! The correct answer was ${currentAnswer}. Time taken: ${timeTaken} seconds.`;
+        resultElement.style.color = "red";
+    }
+
+    document.getElementById("score").innerText = `Score: ${score}`;
+
+    if (score >= scoreLimit) {
+        endGame();
+    }
+}
+
+
+function endGame() {
+    document.getElementById("result").innerText = `Congratulations! You've reached the score limit of ${scoreLimit}.`;
+    document.getElementById("result").style.color = "blue";
+    document.getElementById("nextQuestion").disabled = true;
+    document.getElementById("checkAnswer").disabled = true;
+}
+// Dark Mode/Light Mode Toggle
+document.getElementById("toggleMode").addEventListener("click", () => {
+    const body = document.body;
+    const container = document.querySelector('.container');
+    const toggleButton = document.getElementById("toggleMode");
+
+    body.classList.toggle("dark-mode");
+    container.classList.toggle("dark-mode");
+
+    // Update button text based on the current mode
+    if (body.classList.contains("dark-mode")) {
+        toggleButton.textContent = "Switch to Light Mode";
+    } else {
+        toggleButton.textContent = "Switch to Dark Mode";
+    }
+});
+
+function restartGame() {
+    score = 0;
+    document.getElementById("score").innerText = `Score: ${score}`;
+    document.getElementById("result").innerText = "";
+    document.getElementById("nextQuestion").disabled = false;
+    document.getElementById("checkAnswer").disabled = false;
+    generateQuestion();
+}
+
+// Initialize event listeners
+document.getElementById("checkAnswer").addEventListener("click", checkAnswer);
+document.getElementById("nextQuestion").addEventListener("click", generateQuestion);
+document.getElementById("restartGame").addEventListener("click", restartGame);
+
+// Generate the first question
+generateQuestion();</script>
